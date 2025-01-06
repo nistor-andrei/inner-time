@@ -72,23 +72,17 @@ export const forgotPasswordAction = async (formData: FormData) => {
   });
 
   if (error) {
-    console.error(error.message);
-    return encodedRedirect(
-      "error",
-      "/forgot-password",
-      "Could not reset password"
-    );
+    return { success: false, message: error.message };
   }
 
   if (callbackUrl) {
     return redirect(callbackUrl);
   }
 
-  return encodedRedirect(
-    "success",
-    "/forgot-password",
-    "Check your email for a link to reset your password."
-  );
+  return {
+    success: true,
+    message: "Link trimis cu success!",
+  };
 };
 
 export const resetPasswordAction = async (formData: FormData) => {

@@ -35,7 +35,12 @@ export const updateSession = async (request: NextRequest) => {
     }
   } else {
     // If the user is not logged in, redirect them to the sign-in page
-    if (requestedUrl !== "/sign-in" && requestedUrl !== "/sign-up") {
+    if (
+      requestedUrl !== "/sign-in" &&
+      requestedUrl !== "/sign-up" &&
+      requestedUrl !== "/forgot-password" &&
+      requestedUrl !== "/reset-password"
+    ) {
       return NextResponse.redirect(new URL("/sign-in", request.url));
     }
   }
@@ -45,5 +50,5 @@ export const updateSession = async (request: NextRequest) => {
 
 // Define which routes the middleware will apply to
 export const config = {
-  matcher: ["/", "/sign-in", "/sign-up", "/protected"], // List of routes you want to protect
+  matcher: ["/", "/sign-in", "/sign-up", "/forgot-password"], // List of routes you want to protect
 };

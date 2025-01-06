@@ -1,13 +1,15 @@
 "use client";
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, use } from "react";
 import { signUpAction } from "@/app/actions";
 import Link from "next/link";
 import Image from "next/image";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const SignUp = () => {
   const [isEmailSent, setIsEmailSent] = useState(false); // State pentru a verifica dacă e-mailul a fost trimis
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: FormEvent<SignForm>) => {
     e.preventDefault();
@@ -32,8 +34,6 @@ const SignUp = () => {
     }
   };
 
-  console.log(isEmailSent);
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-96">
@@ -47,7 +47,7 @@ const SignUp = () => {
           </p>
         ) : (
           <form onSubmit={handleSubmit}>
-            <div className="mb-4">
+            <div className="mb-2">
               <label
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
@@ -56,13 +56,14 @@ const SignUp = () => {
               </label>
               <input
                 type="email"
-                id="email"
                 name="email"
-                className="w-full p-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                id="email"
                 required
+                placeholder="Enter your mail address"
+                className="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
             </div>
-            <div className="mb-4">
+            <div className="mb-2">
               <label
                 htmlFor="name"
                 className="block text-sm font-medium text-gray-700"
@@ -78,7 +79,7 @@ const SignUp = () => {
               />
             </div>
 
-            <div className="mb-6">
+            <div className="relative mb-4">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
@@ -86,20 +87,25 @@ const SignUp = () => {
                 Parolă
               </label>
               <input
-                type="password"
-                id="password"
                 name="password"
-                className="w-full p-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+                type={showPassword ? "text" : "password"}
+                id="password"
+                placeholder="Enter password"
+                className="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
-            {errorMessage && (
-              <p className="text-red-600 text-center mb-4">{errorMessage}</p>
-            )}
+
             <button
               type="submit"
               className="w-full bg-primary text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={isLoading} // Dezactivează butonul dacă este în încărcare
+              disabled={isLoading}
             >
               {isLoading ? "Încă se înregistrează..." : "Creează cont"}
             </button>
@@ -107,9 +113,9 @@ const SignUp = () => {
         )}
 
         {!isEmailSent && (
-          <p className="mt-5 text-center">
+          <p className="mt-4 text-center text-sm text-gray-600">
             Daca ai cont ?{" "}
-            <Link href="/sign-in" className="text-primary">
+            <Link href="/sign-in" className="text-primary hover:underline">
               Logheză-te
             </Link>
           </p>

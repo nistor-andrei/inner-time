@@ -11,7 +11,6 @@ const AuthCallback = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const error = urlParams.get("error");
     const errorDescription = urlParams.get("error_description");
-    console.log(error);
 
     if (error) {
       // Afișează un mesaj specific pentru fiecare tip de eroare
