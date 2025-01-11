@@ -22,10 +22,12 @@ const config = {
         primary: {
           DEFAULT: "var(--blue)",
         },
+        "primary-dark": {
+          DEFAULT: "var(--dark-blue)",
+        },
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
 } satisfies Config;
 
 export default config;
