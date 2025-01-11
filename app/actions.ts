@@ -1,9 +1,8 @@
 "use server";
-
-import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { EmailOtpType } from "@supabase/supabase-js";
 
 export const signUpAction = async (formData: FormData) => {
   const name = formData.get("name")?.toString();
@@ -64,7 +63,7 @@ export const forgotPasswordAction = async (formData: FormData) => {
   const callbackUrl = formData.get("callbackUrl")?.toString();
 
   if (!email) {
-    return encodedRedirect("error", "/forgot-password", "Email is required");
+    return { message: "Email este necesar" };
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -85,41 +84,45 @@ export const forgotPasswordAction = async (formData: FormData) => {
   };
 };
 
-export const resetPasswordAction = async (formData: FormData) => {
+export const resetPasswordAction = async (
+  formData: FormData,
+  token: string,
+  type: EmailOtpType
+) => {
   const supabase = await createClient();
 
   const password = formData.get("password") as string;
   const confirmPassword = formData.get("confirmPassword") as string;
 
   if (!password || !confirmPassword) {
-    encodedRedirect(
-      "error",
-      "/protected/reset-password",
-      "Password and confirm password are required"
-    );
+    return { message: "Parolă și confirmarea parolei sunt necesare" };
   }
 
   if (password !== confirmPassword) {
-    encodedRedirect(
-      "error",
-      "/protected/reset-password",
-      "Passwords do not match"
-    );
+    return { message: "Parolele nu corespund" };
+  }
+
+  const { error: otpError } = await supabase.auth.verifyOtp({
+    type,
+    token_hash: token,
+  });
+
+  if (otpError) {
+    return { message: otpError.message };
   }
 
   const { error } = await supabase.auth.updateUser({
-    password: password,
+    password,
   });
 
   if (error) {
-    encodedRedirect(
-      "error",
-      "/protected/reset-password",
-      "Password update failed"
-    );
+    return { success: false, message: error.message };
   }
 
-  encodedRedirect("success", "/protected/reset-password", "Password updated");
+  return {
+    success: true,
+    message: "Parolă schimbată cu success",
+  };
 };
 
 export const signOutAction = async () => {

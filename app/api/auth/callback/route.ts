@@ -5,7 +5,7 @@ export async function GET(request: Request) {
   const supabase = await createClient();
 
   // Check if the user is authenticated
-  const { data: user, error } = await supabase.auth.getUser();
+  const { data: user } = await supabase.auth.getUser();
 
   // Get the URL parameters
   const requestUrl = new URL(request.url);

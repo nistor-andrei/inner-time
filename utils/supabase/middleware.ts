@@ -23,11 +23,20 @@ export const updateSession = async (request: NextRequest) => {
   // Check if user is authenticated
   const {
     data: { user },
-    error,
   } = await supabase.auth.getUser();
 
   // If user is logged in, redirect away from sign-in/signup pages
   const requestedUrl = request.nextUrl.pathname;
+
+  // Check if the URL is the reset password page and if the token and type query parameters are present
+  if (requestedUrl.startsWith("/reset-password")) {
+    const token = request.nextUrl.searchParams.get("token_hash");
+    const type = request.nextUrl.searchParams.get("type");
+
+    if (!token || !type) {
+      return NextResponse.redirect(new URL("/sign-in", request.url));
+    }
+  }
 
   if (user) {
     if (requestedUrl === "/sign-in" || requestedUrl === "/sign-up") {

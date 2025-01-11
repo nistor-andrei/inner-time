@@ -3,6 +3,6 @@ interface SignUpFormElements extends HTMLFormControlsCollection {
   password: HTMLInputElement;
 }
 
-interface SignForm extends HTMLFormElement {
+export interface SignForm extends HTMLFormElement {
   readonly elements: SignUpFormElements;
 }

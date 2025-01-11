@@ -1,20 +1,22 @@
 "use client";
-import { useState, FormEvent, use } from "react";
 import { signUpAction } from "@/app/actions";
-import Link from "next/link";
+import AuthBox from "@/components/AuthBox/AuthBox";
+import Button from "@/components/Button/Button";
+import HeaderAuth from "@/components/HeaderAuth/HeaderAuth";
+import Input from "@/components/Input/Input";
+import { SignForm } from "@/lib/types";
 import Image from "next/image";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Link from "next/link";
+import { FormEvent, useState } from "react";
+import toast from "react-hot-toast";
 
 const SignUp = () => {
-  const [isEmailSent, setIsEmailSent] = useState(false); // State pentru a verifica dacă e-mailul a fost trimis
+  const [isEmailSent, setIsEmailSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: FormEvent<SignForm>) => {
     e.preventDefault();
-    setIsLoading(true); // Se pornește starea de încărcare
-    setErrorMessage(null); // Resetăm mesajul de eroare înainte de a trimite
+    setIsLoading(true);
 
     const formData = new FormData(e.currentTarget);
 
@@ -22,96 +24,65 @@ const SignUp = () => {
       const response = await signUpAction(formData);
 
       if (response.success) {
-        setIsEmailSent(true); // Setează starea ca fiind email trimis
+        setIsEmailSent(true);
       } else {
-        setErrorMessage(response.message); // Setează mesajul de eroare
+        toast.error(response.message);
       }
-    } catch (error: any) {
-      console.error("Eroare la înregistrare: ", error);
-      setErrorMessage("A apărut o problemă la înregistrare.");
+    } catch {
+      toast.error("A apărut o problemă la înregistrare.");
     } finally {
-      setIsLoading(false); // Se oprește starea de încărcare
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <div className="flex justify-center mb-6">
-          <Image src="/logo.jpg" alt="logo" width={100} height={100} />
+    <AuthBox>
+      {/* Right Section: Image */}
+      <div className="hidden lg:flex w-full lg:w-1/2 bg-blue-600 items-center justify-center">
+        <Image
+          src="/register-img.jpg"
+          alt="Graphic"
+          className="w-full h-full object-cover"
+          width={1920}
+          height={1080}
+          objectFit="cover"
+          objectPosition="center"
+          quality={90}
+        />
+      </div>
+      {/* Left Section: Form */}
+      <div className="w-full lg:w-1/2 px-8 py-10">
+        <div className="mb-4 flex justify-center flex-col items-center">
+          <HeaderAuth
+            primaryText="Înregistrare"
+            secondaryText="Creează-ți contul acum"
+          />
         </div>
-
         {isEmailSent ? (
           <p className="mt-4 text-center text-green-600">
             Verifică-ți e-mailul pentru a confirma activarea contului!
           </p>
         ) : (
           <form onSubmit={handleSubmit}>
-            <div className="mb-2">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                required
-                placeholder="Enter your mail address"
-                className="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              />
-            </div>
-            <div className="mb-2">
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Nume Complet
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                className="w-full p-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-
-            <div className="relative mb-4">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Parolă
-              </label>
-              <input
-                name="password"
-                type={showPassword ? "text" : "password"}
-                id="password"
-                placeholder="Enter password"
-                className="mt-1 block w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </button>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-primary text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={isLoading}
-            >
-              {isLoading ? "Încă se înregistrează..." : "Creează cont"}
-            </button>
+            <Input
+              labelText="Email"
+              placeHolderText="Adaugă adresa de email"
+              name="email"
+            />
+            <Input
+              labelText="Nume complet"
+              name="completName"
+              placeHolderText="Introdu numele complet"
+            />
+            <Input
+              labelText="Parolă"
+              placeHolderText="Introdu parola"
+              name="password"
+              isPassword={true}
+            />
+            <Button text="Creează cont" isLoading={isLoading} type="submit" />
           </form>
         )}
-
         {!isEmailSent && (
           <p className="mt-4 text-center text-sm text-gray-600">
             Daca ai cont ?{" "}
@@ -121,7 +92,7 @@ const SignUp = () => {
           </p>
         )}
       </div>
-    </div>
+    </AuthBox>
   );
 };
 

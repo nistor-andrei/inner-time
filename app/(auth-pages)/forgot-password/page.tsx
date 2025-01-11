@@ -1,11 +1,19 @@
 "use client";
 import { forgotPasswordAction } from "@/app/actions";
-import { useRouter } from "next/router";
-import React, { FormEvent, useState } from "react";
+import Button from "@/components/Button/Button";
+import HeaderAuth from "@/components/HeaderAuth/HeaderAuth";
+import IconBox from "@/components/IconBox/IconBox";
+import Input from "@/components/Input/Input";
+import { SignForm } from "@/lib/types";
+import { useRouter } from "next/navigation";
+import { FC, FormEvent, useState } from "react";
 import toast from "react-hot-toast";
+import { HiOutlineFingerPrint } from "react-icons/hi";
+import { IoMdArrowBack } from "react-icons/io";
 
-const ForgotPassword: React.FC = () => {
+const ForgotPassword: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<SignForm>) => {
     e.preventDefault();
@@ -29,7 +37,7 @@ const ForgotPassword: React.FC = () => {
           return err.message || "A apărut o eroare. Încercați din nou.";
         },
       });
-    } catch (error) {
+    } catch {
       toast.error("A apărut o eroare. Încercați din nou.");
     } finally {
       setIsLoading(false);
@@ -39,32 +47,33 @@ const ForgotPassword: React.FC = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-        <h2 className="text-2xl font-semibold text-center mb-6">
-          Ai uitat parola?
-        </h2>
+        <div className="flex justify-center mb-7 flex-col items-center">
+          <IconBox>
+            <HiOutlineFingerPrint className="w-6 h-6 text-gray-600" />
+          </IconBox>
+          <HeaderAuth
+            primaryText="Ai uitat parola?"
+            secondaryText="Îți trimitem instrucțiunile pe email."
+          />
+        </div>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Adresa ta de email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              className="mt-2 p-3 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <button
+          <Input
+            labelText="Adresa ta de email"
+            name="email"
+            placeHolderText="Introdu adresa de email"
+          />
+          <Button
             type="submit"
-            disabled={isLoading}
-            className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:opacity-70 disabled:opacity-50 disabled:pointer-events-none"
-          >
-            Trimite link-ul pentru resetare
-          </button>
+            text="Trimite link-ul pentru resetare"
+            isLoading={isLoading}
+          />
+          <Button
+            type="button"
+            text="Înapoi la login"
+            icon={<IoMdArrowBack className="mr-2" />}
+            onClick={() => router.push("/sign-in")}
+            variant="transparent"
+          />
         </form>
       </div>
     </div>
