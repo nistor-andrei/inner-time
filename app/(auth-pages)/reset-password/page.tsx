@@ -6,7 +6,7 @@ import IconBox from "@/components/IconBox/IconBox";
 import Input from "@/components/Input/Input";
 import { EmailOtpType } from "@supabase/supabase-js";
 import { useSearchParams } from "next/navigation";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, Suspense, useState } from "react";
 import toast from "react-hot-toast";
 import { CgPassword } from "react-icons/cg";
 
@@ -51,28 +51,30 @@ const ResetPasswordPage: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-        <div className="flex justify-center mb-7 flex-col items-center">
-          <IconBox>
-            <CgPassword className="w-6 h-6 text-gray-600" />
-          </IconBox>
-          <HeaderAuth
-            primaryText="Setează o nouă parolă"
-            secondaryText="Trebuie să conțină cel puțin 6 caractere"
-          />
+    <Suspense fallback={<div>Loading...</div>}>
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+          <div className="flex justify-center mb-7 flex-col items-center">
+            <IconBox>
+              <CgPassword className="w-6 h-6 text-gray-600" />
+            </IconBox>
+            <HeaderAuth
+              primaryText="Setează o nouă parolă"
+              secondaryText="Trebuie să conțină cel puțin 6 caractere"
+            />
+          </div>
+          <form onSubmit={handleSubmit}>
+            <Input labelText="Parolă" name="password" isPassword={true} />
+            <Input
+              labelText="Confirmă Parola"
+              name="confirmPassword"
+              isPassword={true}
+            />
+            <Button isLoading={isLoading} text={"Resetează parola"} />
+          </form>
         </div>
-        <form onSubmit={handleSubmit}>
-          <Input labelText="Parolă" name="password" isPassword={true} />
-          <Input
-            labelText="Confirmă Parola"
-            name="confirmPassword"
-            isPassword={true}
-          />
-          <Button isLoading={isLoading} text={"Resetează parola"} />
-        </form>
       </div>
-    </div>
+    </Suspense>
   );
 };
 
