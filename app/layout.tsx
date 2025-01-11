@@ -1,7 +1,7 @@
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Open_Sans } from "next/font/google";
-import "./globals.css";
 import { Toaster } from "react-hot-toast";
-
+import "./globals.css";
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
@@ -27,6 +27,7 @@ export default function RootLayout({
       <body className="bg-background text-foreground">
         <div className="">{children}</div>
         <Toaster />
+        <SpeedInsights />
       </body>
     </html>
   );
