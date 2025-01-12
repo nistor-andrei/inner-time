@@ -1,3 +1,4 @@
+import Sidebar from "@/components/Sidebar/Sidebar";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Open_Sans } from "next/font/google";
 import { Toaster } from "react-hot-toast";
@@ -25,9 +26,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={openSans.className} suppressHydrationWarning>
       <body className="bg-background text-foreground">
-        <div className="">{children}</div>
-        <Toaster />
+        <div className="flex">
+          <Sidebar />
+          {children}
+        </div>
         <SpeedInsights />
+        <Toaster />
       </body>
     </html>
   );

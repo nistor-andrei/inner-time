@@ -25,6 +25,9 @@ const config = {
         "primary-dark": {
           DEFAULT: "var(--dark-blue)",
         },
+        "light-gray": {
+          DEFAULT: "var(--light-gray)",
+        },
       },
     },
   },
