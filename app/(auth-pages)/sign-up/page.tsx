@@ -25,6 +25,7 @@ const SignUp = () => {
 
       if (response.success) {
         setIsEmailSent(true);
+        toast.success(response.message);
       } else {
         toast.error(response.message);
       }
@@ -71,7 +72,7 @@ const SignUp = () => {
             />
             <Input
               labelText="Nume complet"
-              name="completName"
+              name="name"
               placeHolderText="Introdu numele complet"
             />
             <Input

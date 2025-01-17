@@ -25,9 +25,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={openSans.className} suppressHydrationWarning>
       <body className="bg-background text-foreground">
-        <div className="">{children}</div>
-        <Toaster />
+        {children}
         <SpeedInsights />
+        <Toaster />
       </body>
     </html>
   );

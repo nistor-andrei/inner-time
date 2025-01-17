@@ -10,7 +10,25 @@ import { redirect } from "next/navigation";
 export function encodedRedirect(
   type: "error" | "success",
   path: string,
-  message: string,
+  message: string
 ) {
   return redirect(`${path}?${type}=${encodeURIComponent(message)}`);
 }
+
+export const sidebarPath = [
+  {
+    icon: "RxDashboard",
+    text: "Panou",
+    link: "/",
+  },
+  {
+    icon: "RiCalendarScheduleLine",
+    text: "Programări",
+    link: "/appointment",
+  },
+  {
+    icon: "AiOutlineTeam",
+    text: "Clienți",
+    link: "/clients",
+  },
+];

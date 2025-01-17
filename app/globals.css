@@ -6,8 +6,7 @@
   :root {
     --blue: #125ef2;
     --dark-blue: #0a4ab8;
+    --light-gray: #fcfbfc;
+    --text-sm: 16px;
   }
-}
-
-@layer base {
 }
