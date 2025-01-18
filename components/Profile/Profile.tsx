@@ -10,7 +10,7 @@ const Profile = ({ user }: { user: User | null }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
-    <div className="flex items-center justify-end p-4 bg-white w-full max-w-md cursor-pointer relative">
+    <div className="flex items-center justify-end  w-full max-w-md  relative">
       <div className="flex items-center gap-3">
         <ProfileImage
           avatarUrl={user?.user_metadata?.avatar_url}

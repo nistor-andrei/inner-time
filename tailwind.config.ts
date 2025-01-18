@@ -22,12 +22,18 @@ const config = {
         primary: {
           DEFAULT: "var(--blue)",
         },
+        secondary: {
+          DEFAULT: "var(--green)",
+        },
         "primary-dark": {
-          DEFAULT: "var(--dark-blue)",
+          DEFAULT: "var(--light-blue)",
         },
         "light-gray": {
           DEFAULT: "var(--light-gray)",
         },
+      },
+      borderWidth: {
+        "1": "1px",
       },
     },
   },
