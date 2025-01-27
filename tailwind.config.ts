@@ -25,11 +25,14 @@ const config = {
         secondary: {
           DEFAULT: "var(--green)",
         },
-        "primary-dark": {
+        "light-blue": {
           DEFAULT: "var(--light-blue)",
         },
         "light-gray": {
           DEFAULT: "var(--light-gray)",
+        },
+        "sidebar-bg": {
+          DEFAULT: "var(--sidebar-bg)",
         },
       },
       borderWidth: {

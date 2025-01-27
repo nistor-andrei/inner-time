@@ -1,5 +1,4 @@
 "use client";
-import { sidebarPath } from "@/utils/utils";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,6 +11,7 @@ import {
   TbLayoutSidebarLeftCollapse,
   TbLayoutSidebarRightCollapse,
 } from "react-icons/tb";
+import { sidebarPath } from "./utils";
 
 const iconMap: Record<string, ElementType> = {
   RxDashboard: RxDashboard,
@@ -49,7 +49,6 @@ const Sidebar = () => {
         )}
       </div>
 
-      {/* Scrollable Menu Section */}
       <ul className="space-y-4 p-4 overflow-y-auto flex-1">
         {sidebarPath.map(({ icon, text, link }) => {
           const IconComponent = iconMap[icon];
@@ -88,7 +87,7 @@ const Sidebar = () => {
       <button
         onClick={toggleSidebar}
         className={clsx(
-          "p-4 text-3xl bg-light-gray border-t bg-white",
+          "p-4 text-3xl  border-t bg-white",
           isCollapsed && "flex justify-center"
         )}
       >
