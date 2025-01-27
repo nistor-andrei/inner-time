@@ -1,5 +1,4 @@
 "use client";
-import { sidebarPath } from "@/utils/utils";
 import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,6 +11,7 @@ import {
   TbLayoutSidebarLeftCollapse,
   TbLayoutSidebarRightCollapse,
 } from "react-icons/tb";
+import { sidebarPath } from "./utils";
 
 const iconMap: Record<string, ElementType> = {
   RxDashboard: RxDashboard,
@@ -28,15 +28,15 @@ const Sidebar = () => {
   };
 
   return (
-    <div
+    <aside
       className={clsx(
-        "h-screen  bg-light-gray text-black border-e flex flex-col",
+        "h-screen  bg-white text-black border-e flex flex-col",
         "transition-all duration-300 ease-in-out",
         isCollapsed ? "w-17" : "w-64"
       )}
     >
       {/* Logo Section */}
-      <div className="p-4 flex items-center">
+      <div className="px-4 py-[13.1px] flex items-center border-b-1">
         <Image
           src="/logo-bg.png"
           alt="logo"
@@ -49,7 +49,6 @@ const Sidebar = () => {
         )}
       </div>
 
-      {/* Scrollable Menu Section */}
       <ul className="space-y-4 p-4 overflow-y-auto flex-1">
         {sidebarPath.map(({ icon, text, link }) => {
           const IconComponent = iconMap[icon];
@@ -88,7 +87,7 @@ const Sidebar = () => {
       <button
         onClick={toggleSidebar}
         className={clsx(
-          "p-4 text-3xl bg-light-gray border-t border-gray-300",
+          "p-4 text-3xl  border-t bg-white",
           isCollapsed && "flex justify-center"
         )}
       >
@@ -98,7 +97,7 @@ const Sidebar = () => {
           <TbLayoutSidebarLeftCollapse />
         )}
       </button>
-    </div>
+    </aside>
   );
 };
 

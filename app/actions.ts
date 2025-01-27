@@ -1,8 +1,8 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
+import { EmailOtpType } from "@supabase/supabase-js";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { EmailOtpType } from "@supabase/supabase-js";
 
 export const signUpAction = async (formData: FormData) => {
   const name = formData.get("name")?.toString();
