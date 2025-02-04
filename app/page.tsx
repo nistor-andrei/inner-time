@@ -1,12 +1,12 @@
 import Card from "@/components/Card/Card";
-import Greetings from "@/components/Greetings/Greetings";
 import Profile from "@/components/Profile/Profile";
 import Sidebar from "@/components/Sidebar/Sidebar";
 import moment from "moment";
-import { FaCalendarXmark } from "react-icons/fa6";
-import { IoMdCalendar } from "react-icons/io";
 import { IoPeopleOutline } from "react-icons/io5";
+import { RiCalendarCloseLine, RiCalendarEventLine } from "react-icons/ri";
 import { getUserData } from "./actions/getUserData";
+import AppointmentsTable from "./components/AppointmentsTable/AppointmentsTable";
+import StyledCalendar from "./components/Calendar/Calendar";
 import Header from "./components/Header/Header";
 
 export default async function Home() {
@@ -25,36 +25,43 @@ export default async function Home() {
       title: "Programări totale",
       numberOf: 1025,
       subText: `Ultima actualizare: ${formattedDate}`,
-      icon: <IoMdCalendar className="icon-style" />,
+      icon: <RiCalendarEventLine className="icon-style" />,
     },
     {
       title: "Programări neconfirmate",
       numberOf: 3,
       subText: `Ultima actualizare: ${formattedDateWithTime}`,
-      icon: <FaCalendarXmark className="icon-style" />,
+      icon: <RiCalendarCloseLine className="icon-style " />,
     },
   ];
+
+  const appointments = ["31/01/2025", "21/02/2025", "20/02/2025", "23/02/2025"];
 
   return (
     <div className="flex">
       <Sidebar />
-      <main className="flex-1 flex flex-col  bg-light-gray ">
-        <div className="flex justify-between items-center pl-6 border-b-1 py-4">
-          <Greetings name={user?.user_metadata.display_name} />
+      <main className="flex-1 flex flex-col   ">
+        <div className="flex justify-between items-center pl-6 py-4">
+          <Header />
           <Profile user={user} />
         </div>
         <div>
-          <Header />
-          <section className="flex w-full justify-between mt-5 px-6 gap-10">
-            {cardsData.map((card, index) => (
-              <Card
-                key={index}
-                title={card.title}
-                numberOf={card.numberOf}
-                subText={card.subText}
-                icon={card.icon}
-              />
-            ))}
+          <section className="flex  mt-5 px-6 flex-col">
+            <div className="flex gap-5 mb-5 ">
+              {cardsData.map((card, index) => (
+                <Card
+                  key={index}
+                  title={card.title}
+                  numberOf={card.numberOf}
+                  subText={card.subText}
+                  icon={card.icon}
+                />
+              ))}
+            </div>
+            <div className="flex gap-5">
+              <AppointmentsTable />
+              <StyledCalendar appointments={appointments} />
+            </div>
           </section>
         </div>
       </main>

@@ -4,10 +4,13 @@
 
 @layer base {
   :root {
-    --blue: #3b8bdb;
-    --light-blue: #f0f8ff;
-    --light-gray: #fcfbfc;
-    --green: #6bbf47;
+    --blue: #3561ff;
+    --light-blue: #e4ecff;
+    --gray: #ecedf0;
+    --light-gray: #f8f9fe;
+    --mid-gray: #9da3b5;
+    --darker-gray: #474f68;
+    --black: #212639;
     --text-sm: 16px;
   }
 }

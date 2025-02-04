@@ -12,19 +12,19 @@ interface CardProps {
 
 const Card = ({ title, numberOf, icon, subText }: CardProps) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col justify-between min-h-32 max-h-full  w-full max-w-sm sm:max-w-md mx-auto">
-      <div className="flex items-center justify-between w-full">
+    <div className="bg-white rounded-lg p-6  shadow-md transition-shadow w-8/12">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex text-3xl  items-center">
           {icon}
-          <h3 className="text-gray-500 text-lg ml-2 font-semibold">{title}</h3>
+          <h3 className="text-black text-sm ml-1">{title}</h3>
         </div>
         <Link href="/details" className="border-1 rounded-full p-1">
           <MdOutlineArrowOutward className="text-primary" />
         </Link>
       </div>
       <div className="mt-4">
-        <p className="text-3xl font-bold text-gray-900 mb-2">{numberOf}</p>
-        <p className="text-sm text-gray-500">{subText}</p>
+        <p className="text-4xl font-semibold text-black">{numberOf}</p>
+        <p className="text-sm text-mid-gray">{subText}</p>
       </div>
     </div>
   );

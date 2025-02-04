@@ -14,4 +14,5 @@ export const sidebarPath = [
     text: "Clienți",
     link: "/clients",
   },
+  { icon: "IoMdSettings", text: "Setări", link: "/settings" },
 ];

@@ -4,7 +4,7 @@ import { IoIosSettings } from "react-icons/io";
 
 const ProfileDropdown = () => {
   return (
-    <div className="absolute right-6 top-20 w-48 bg-white shadow-lg rounded-lg p-2">
+    <div className="absolute right-6 top-[4rem] w-48 bg-white shadow-lg rounded-lg p-2">
       <button
         className="flex items-center gap-2 w-full p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
         onClick={() => alert("Navigating to Profile...")}
