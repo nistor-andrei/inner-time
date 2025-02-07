@@ -4,32 +4,35 @@ import Sidebar from "@/components/Sidebar/Sidebar";
 import moment from "moment";
 import { IoPeopleOutline } from "react-icons/io5";
 import { RiCalendarCloseLine, RiCalendarEventLine } from "react-icons/ri";
-import { getUserData } from "./actions/getUserData";
+import { getUserDetails } from "./actions/user-details/actions";
+import { getUserData } from "./actions/user-info/actions";
 import AppointmentsTable from "./components/AppointmentsTable/AppointmentsTable";
 import StyledCalendar from "./components/Calendar/Calendar";
 import Header from "./components/Header/Header";
 
 export default async function Home() {
   const user = await getUserData();
+  const { data, error } = await getUserDetails(user?.id || "");
+
   const formattedDate = moment().format("DD.MM.YYYY");
   const formattedDateWithTime = moment().format("DD.MM.YYYY HH:mm:ss");
 
   const cardsData = [
     {
       title: "Clienți",
-      numberOf: 1025,
+      numberOf: data.total_clients,
       subText: "Număr total de clienți înregistrați în sistem.",
       icon: <IoPeopleOutline className="icon-style" />,
     },
     {
       title: "Programări totale",
-      numberOf: 1025,
+      numberOf: data.total_appointments,
       subText: `Ultima actualizare: ${formattedDate}`,
       icon: <RiCalendarEventLine className="icon-style" />,
     },
     {
       title: "Programări neconfirmate",
-      numberOf: 3,
+      numberOf: data.unconfirmed_appointments,
       subText: `Ultima actualizare: ${formattedDateWithTime}`,
       icon: <RiCalendarCloseLine className="icon-style " />,
     },
