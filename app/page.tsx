@@ -12,7 +12,7 @@ import Header from "./components/Header/Header";
 
 export default async function Home() {
   const user = await getUserData();
-  const { data, error } = await getUserDetails(user?.id || "");
+  const { data } = await getUserDetails(user?.id || "");
 
   const formattedDate = moment().format("DD.MM.YYYY");
   const formattedDateWithTime = moment().format("DD.MM.YYYY HH:mm:ss");
