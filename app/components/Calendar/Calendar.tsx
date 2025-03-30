@@ -1,27 +1,47 @@
 "use client";
+import { getAppointments } from "@/app/actions/appointments/action";
+import { Appointments } from "@/utils/namespace";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import useSWR from "swr";
 import "./Calendar.css";
 
 interface StyledCalendarProps {
-  appointments: string[];
+  userId: string;
 }
 
-const StyledCalendar = ({ appointments }: StyledCalendarProps) => {
-  const appointmentDates = appointments.map((app) => {
-    const [day, month, year] = app.split("/");
-    return `${day}/${month}/${year}`;
-  });
+const StyledCalendar = ({ userId }: StyledCalendarProps) => {
+  const { data: appointments } = useSWR<Appointments[]>(
+    userId ? `/api/appointments/${userId}` : null,
+    async () => {
+      const response = await getAppointments(userId);
+      return response.data || [];
+    }
+  );
+
+  // Extract and format appointment dates (DD/MM/YYYY)
+  const appointmentDates =
+    appointments?.map(({ appointment_date }) => {
+      const date = new Date(appointment_date); // Parse the date string
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    }) || [];
 
   const tileContent = ({ date, view }: { date: Date; view: string }) => {
     if (view === "month") {
-      const dateStr = `${date.getDate()}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
+      const dateStr = `${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
 
       const hasAppointment = appointmentDates.includes(dateStr);
+      const todayStr = `${String(new Date().getDate()).padStart(2, "0")}/${String(new Date().getMonth() + 1).padStart(2, "0")}/${new Date().getFullYear()}`;
+      const isPast = dateStr < todayStr;
 
       return hasAppointment ? (
         <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2">
-          <div className="h-1 w-1 bg-blue-600 rounded-full"></div>
+          <div
+            className={`h-1 w-1 rounded-full ${isPast ? "bg-gray-400" : "bg-blue-600"}`}
+          ></div>
         </div>
       ) : null;
     }

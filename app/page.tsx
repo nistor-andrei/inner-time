@@ -38,8 +38,6 @@ export default async function Home() {
     },
   ];
 
-  const appointments = ["31/01/2025", "21/02/2025", "20/02/2025", "23/02/2025"];
-
   return (
     <div className="flex">
       <Sidebar />
@@ -62,8 +60,8 @@ export default async function Home() {
               ))}
             </div>
             <div className="flex gap-5">
-              <AppointmentsTable />
-              <StyledCalendar appointments={appointments} />
+              <AppointmentsTable userId={user?.id ?? ""} />
+              <StyledCalendar userId={user?.id ?? ""} />
             </div>
           </section>
         </div>

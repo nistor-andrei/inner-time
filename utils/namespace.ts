@@ -7,3 +7,17 @@ export interface UserDetails {
   unconfirmed_appointments: number;
   user_id: string;
 }
+
+export interface Appointments {
+  appointment_date: string;
+  client_name: string;
+  confirmed: boolean;
+  created_at: string;
+  id: string;
+  user_id: string;
+}
+
+export interface Response<T, K> {
+  data: T;
+  error: K;
+}

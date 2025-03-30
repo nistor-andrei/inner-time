@@ -1,47 +1,33 @@
 "use client";
-import { useState } from "react";
+import { getAppointments } from "@/app/actions/appointments/action";
+import { Appointments } from "@/utils/namespace";
+import moment from "moment";
+import { Suspense, useState } from "react";
+import { HashLoader } from "react-spinners";
+import useSWR from "swr";
 
-const AppointmentsTable = () => {
+const AppointmentsTable = ({ userId }: { userId: string }) => {
   const [activeTab, setActiveTab] = useState("upcoming");
 
-  const appointments = [
-    {
-      nume: "Popescu Maria",
-      data: "20 Feb 2025",
-      timp: "10:00",
-      status: "Confirmat",
-    },
-    {
-      nume: "Popescu Maria",
-      data: "31 Ian 2025",
-      timp: "10:00",
-      status: "Confirmat",
-    },
-    {
-      nume: "Ionescu Dan",
-      data: "21 Feb 2025",
-      timp: "11:30",
-      status: "În așteptare",
-    },
-    {
-      nume: "Popa Alexandru",
-      data: "22 Feb 2025",
-      timp: "14:00",
-      status: "Confirmat",
-    },
-    {
-      nume: "Popa Alexandru",
-      data: "22 Feb 2025",
-      timp: "14:00",
-      status: "Confirmat",
-    },
-    {
-      nume: "Popa Alexandru",
-      data: "22 Feb 2025",
-      timp: "14:00",
-      status: "Confirmat",
-    },
-  ];
+  const { data: appointments } = useSWR<Appointments[]>(
+    userId ? `/api/appointments/${userId}` : null,
+    async () => {
+      const response = await getAppointments(userId);
+      return response.data || [];
+    }
+  );
+
+  const futureAppointments =
+    appointments?.filter((appointment) => {
+      const appointmentDate = moment(appointment.appointment_date);
+      return appointmentDate.isSameOrAfter(moment(), "day");
+    }) || [];
+
+  const pastAppointments =
+    appointments?.filter((appointment) => {
+      const appointmentDate = moment(appointment.appointment_date);
+      return appointmentDate.isBefore(moment(), "day"); // Doar programările trecute
+    }) || [];
 
   return (
     <div className="w-full max-w-4xl p-4 bg-white rounded-md shadow-md">
@@ -71,89 +57,125 @@ const AppointmentsTable = () => {
               <span>Vezi toate</span>
             </button>
           </div>
-
-          {activeTab === "upcoming" && (
-            <div className="bg-white border-1 max-h-[200px] overflow-y-auto rounded-md">
-              <table className="w-full">
-                <thead className="sticky top-0 bg-white shadow">
-                  <tr className="border-b">
-                    <th className="py-3 px-4 text-left font-medium text-gray-600">
-                      Nume
-                    </th>
-                    <th className="py-3 px-4 text-left font-medium text-gray-600">
-                      Data
-                    </th>
-                    <th className="py-3 px-4 text-left font-medium text-gray-600">
-                      Timp
-                    </th>
-                    <th className="py-3 px-4 text-left font-medium text-gray-600">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {appointments.map((appointment, index) => (
-                    <tr
-                      key={index}
-                      className={`hover:bg-gray-50 ${
-                        index !== appointments.length - 1 ? "border-b" : ""
-                      }`}
-                    >
-                      <td className="py-3 px-4">{appointment.nume}</td>
-                      <td className="py-3 px-4">{appointment.data}</td>
-                      <td className="py-3 px-4">{appointment.timp}</td>
-                      <td className="py-3 px-4">
-                        <span
-                          className={`px-2 py-1 rounded-full text-sm ${
-                            appointment.status === "Confirmat"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}
-                        >
-                          {appointment.status}
-                        </span>
-                      </td>
+          <Suspense fallback={<HashLoader />}>
+            {activeTab === "upcoming" && (
+              <div className="bg-white border-1 max-h-[200px] overflow-y-auto rounded-md">
+                <table className="w-full">
+                  <thead className="sticky top-0 bg-white shadow">
+                    <tr className="border-b">
+                      <th className="py-3 px-4 text-left font-medium text-gray-600">
+                        Nume
+                      </th>
+                      <th className="py-3 px-4 text-left font-medium text-gray-600">
+                        Data
+                      </th>
+                      <th className="py-3 px-4 text-left font-medium text-gray-600">
+                        Ora
+                      </th>
+                      <th className="py-3 px-4 text-left font-medium text-gray-600">
+                        Status
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                  </thead>
+                  <tbody>
+                    {appointments &&
+                      futureAppointments?.map((appointment, index) => {
+                        const date = moment(appointment.appointment_date);
+                        const dateFormat = date.format("DD.MM.YYYY");
+                        const hour = date.format("HH:mm");
+                        return (
+                          <tr
+                            key={index}
+                            className={`hover:bg-gray-50 ${
+                              index !== appointments.length - 1
+                                ? "border-b"
+                                : ""
+                            }`}
+                          >
+                            <td className="py-3 px-4">
+                              {appointment.client_name}
+                            </td>
+                            <td className="py-3 px-4">{dateFormat}</td>
+                            <td className="py-3 px-4">{hour}</td>
+                            <td className="py-3 px-4">
+                              <span
+                                className={`px-2 py-1 rounded-full text-sm ${
+                                  appointment.confirmed
+                                    ? "bg-green-100 text-green-800"
+                                    : "bg-yellow-100 text-yellow-800"
+                                }`}
+                              >
+                                {appointment.confirmed
+                                  ? "Confirmat"
+                                  : "Neconfirmat"}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
+            )}
 
-          {activeTab === "past" && (
-            <div className="bg-white border-1 max-h-[300px] overflow-y-auto rounded-md">
-              <table className="w-full">
-                <thead className="sticky top-0 bg-white shadow">
-                  <tr className="border-b">
-                    <th className="py-3 px-4 text-left font-medium text-gray-600">
-                      Nume
-                    </th>
-                    <th className="py-3 px-4 text-left font-medium text-gray-600">
-                      Data
-                    </th>
-                    <th className="py-3 px-4 text-left font-medium text-gray-600">
-                      Timp
-                    </th>
-                    <th className="py-3 px-4 text-left font-medium text-gray-600">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b hover:bg-gray-50">
-                    <td className="py-3 px-4">Radu Elena</td>
-                    <td className="py-3 px-4">15 Feb 2025</td>
-                    <td className="py-3 px-4">09:00</td>
-                    <td className="py-3 px-4">
-                      <span className="px-2 py-1 rounded-full text-sm bg-gray-100 text-gray-800">
-                        Finalizat
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          )}
+            {activeTab === "past" && pastAppointments.length > 0 ? (
+              <div className="bg-white border max-h-[300px] overflow-y-auto rounded-md">
+                <table className="w-full">
+                  <thead className="sticky top-0 bg-white shadow">
+                    <tr className="border-b">
+                      <th className="py-3 px-4 text-left font-medium text-gray-600">
+                        Nume
+                      </th>
+                      <th className="py-3 px-4 text-left font-medium text-gray-600">
+                        Data
+                      </th>
+                      <th className="py-3 px-4 text-left font-medium text-gray-600">
+                        Timp
+                      </th>
+                      <th className="py-3 px-4 text-left font-medium text-gray-600">
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pastAppointments.map((appointment, index) => {
+                      const date = moment(appointment.appointment_date);
+                      return (
+                        <tr key={index} className="border-b hover:bg-gray-50">
+                          <td className="py-3 px-4">
+                            {appointment.client_name}
+                          </td>
+                          <td className="py-3 px-4">
+                            {date.format("DD MMM YYYY")}
+                          </td>
+                          <td className="py-3 px-4">{date.format("HH:mm")}</td>
+                          <td className="py-3 px-4">
+                            <span
+                              className={`px-2 py-1 rounded-full text-sm ${
+                                appointment.confirmed
+                                  ? "bg-gray-100 text-gray-800"
+                                  : "bg-red-100 text-red-800"
+                              }`}
+                            >
+                              {appointment.confirmed
+                                ? "Finalizat"
+                                : "Neconfirmat"}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              activeTab === "past" && (
+                <p className="text-gray-500 text-center py-4">
+                  Nu există programări trecute.
+                </p>
+              )
+            )}
+          </Suspense>
         </div>
       </div>
     </div>
