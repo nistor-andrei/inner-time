@@ -20,19 +20,19 @@ export default async function Home() {
   const cardsData = [
     {
       title: "Clienți",
-      numberOf: data.total_clients,
+      numberOf: data?.total_clients ?? 0,
       subText: "Număr total de clienți înregistrați în sistem.",
       icon: <IoPeopleOutline className="icon-style" />,
     },
     {
       title: "Programări totale",
-      numberOf: data.total_appointments,
+      numberOf: data?.total_appointments ?? 0,
       subText: `Ultima actualizare: ${formattedDate}`,
       icon: <RiCalendarEventLine className="icon-style" />,
     },
     {
       title: "Programări neconfirmate",
-      numberOf: data.unconfirmed_appointments,
+      numberOf: data?.unconfirmed_appointments ?? 0,
       subText: `Ultima actualizare: ${formattedDateWithTime}`,
       icon: <RiCalendarCloseLine className="icon-style " />,
     },

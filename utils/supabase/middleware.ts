@@ -3,7 +3,13 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 export const updateSession = async (request: NextRequest) => {
-  const response = NextResponse.next(); // Create a mutable response object
+  const response = NextResponse.next();
+  const requestedUrl = request.nextUrl.pathname;
+
+  // Skip middleware for API routes and static files
+  if (requestedUrl.startsWith('/api') || requestedUrl.startsWith('/_next')) {
+    return response;
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -22,42 +28,28 @@ export const updateSession = async (request: NextRequest) => {
     }
   );
 
-  // Check if the user is authenticated
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  const requestedUrl = request.nextUrl.pathname;
-
-  // Handle reset password token and type
-  if (requestedUrl.startsWith("/reset-password")) {
-    const token = request.nextUrl.searchParams.get("token_hash");
-    const type = request.nextUrl.searchParams.get("type");
-
-    if (!token || !type) {
-      return NextResponse.redirect(new URL("/sign-in", request.url));
-    }
+  // Handle auth callback
+  if (requestedUrl === "/auth/callback") {
+    return user ? NextResponse.redirect(new URL("/", request.url)) : response;
   }
 
+  // Handle authenticated routes
   if (user) {
-    if (requestedUrl === "/sign-in" || requestedUrl === "/sign-up") {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-  } else {
-    if (
-      requestedUrl !== "/sign-in" &&
-      requestedUrl !== "/sign-up" &&
-      requestedUrl !== "/forgot-password" &&
-      requestedUrl !== "/reset-password"
-    ) {
-      return NextResponse.redirect(new URL("/sign-in", request.url));
-    }
+    return requestedUrl === "/sign-in" 
+      ? NextResponse.redirect(new URL("/", request.url))
+      : response;
   }
 
-  return response; // Return the modified response
+  // Handle unauthenticated routes
+  return requestedUrl === "/sign-in" || requestedUrl === "/auth/callback"
+    ? response
+    : NextResponse.redirect(new URL("/sign-in", request.url));
 };
 
-// Define which routes the middleware will apply to
 export const config = {
-  matcher: ["/", "/sign-in", "/sign-up", "/forgot-password", "/reset-password"], // List of routes to protect
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };
