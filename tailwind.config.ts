@@ -23,16 +23,22 @@ const config = {
           DEFAULT: "var(--blue)",
         },
         secondary: {
-          DEFAULT: "var(--green)",
-        },
-        "light-blue": {
           DEFAULT: "var(--light-blue)",
+        },
+        gray: {
+          DEFAULT: "var(--gray)",
         },
         "light-gray": {
           DEFAULT: "var(--light-gray)",
         },
-        "sidebar-bg": {
-          DEFAULT: "var(--sidebar-bg)",
+        "darker-gray": {
+          DEFAULT: "var(--darker-gray)",
+        },
+        black: {
+          DEFAULT: "var(--black)",
+        },
+        "mid-gray": {
+          DEFAULT: "var(--mid-gray)",
         },
       },
       borderWidth: {

@@ -1,40 +1,49 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 import toast from "react-hot-toast";
 
-const AuthCallback = () => {
+export default function AuthCallback() {
   const router = useRouter();
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const error = urlParams.get("error");
-    const errorDescription = urlParams.get("error_description");
+    const handleCallback = async () => {
+      const timeout = setTimeout(() => {
+        toast.error("Autentificarea a durat prea mult. Te rugăm să încerci din nou.");
+        router.push("/sign-in");
+      }, 10000); // 10 seconds timeout
 
-    if (error) {
-      // Afișează un mesaj specific pentru fiecare tip de eroare
-      if (error === "otp_expired") {
-        toast.error("Link-ul a expirat! Te rugăm să soliciți unul nou.");
-      } else if (error === "access_denied") {
-        toast.error("Acces refuzat. Te rugăm să încerci din nou.");
-      } else {
-        toast.error(`Eroare: ${errorDescription || "Necunoscută"}`);
+      try {
+        const supabase = createClient();
+        const { data: { session }, error } = await supabase.auth.getSession();
+
+        if (error || !session) {
+          toast.error("Autentificarea a eșuat");
+          router.push("/sign-in");
+          return;
+        }
+
+        toast.success("Autentificare reușită!");
+        router.push("/");
+      } catch (_) {
+        toast.error("A apărut o eroare neașteptată");
+        router.push("/sign-in");
+      } finally {
+        clearTimeout(timeout);
       }
-    } else {
-      toast.success("Cont activat cu succes!");
-      router.push("/"); // Redirecționează către pagina principală după activare
-    }
+    };
+
+    handleCallback();
   }, [router]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-medium">Activarea contului</h2>
-        <p>Procesul de activare a contului este în curs de desfășurare...</p>
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Se procesează autentificarea...</p>
       </div>
     </div>
   );
-};
-
-export default AuthCallback;
+}
